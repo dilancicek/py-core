@@ -1,25 +1,19 @@
 # Py-Core Library 🚀
 
-`py_core`, Python'da modern yazılım geliştirme prensipleri (TDD, OOP, Type Safety ve Asenkron Programlama) gözetilerek sıfırdan geliştirilmiş kapsamlı bir çekirdek kütüphanedir.
+`py_core`, Python'da modern yazılım geliştirme standartlarına uygun olarak geliştirilmiş çekirdek kütüphanedir.
 
-## 📁 Modüller ve Yapı
+## 📁 Modüller ve Kapsam
 
-Kütüphane içerisinde toplam **80 adetim birim test (pytest)** ile test edilmiş 6 ana modül bulunmaktadır:
+Proje kapsamında geliştirilen modüller ve test edilen yapılar:
+- **Collections**: Veri yapıları ve koleksiyon yardımcıları.
+- **Strings**: Metin işleme ve doğrulama araçları.
+- **Generators**: Bellek dostu veri akışları.
+- **Decorators & Context Managers**: Fonksiyon ve bağlam yönetim araçları.
+- **OOP**: Temel tasarım kalıpları (Design Patterns).
+- **Typing & Async**: Tip güvenliği yardımcıları ve asenkron işlem araçları.
 
-1. **Collections (`collections_utils.py`)**: Gelişmiş veri yapıları ve koleksiyon manipülasyonları.
-2. **Strings (`strings.py`)**: Metin işleme, biçimlendirme ve doğrulama araçları.
-3. **Generators (`generators.py`)**: Bellek dostu veri akışları ve özel jeneratör yapıları.
-4. **Decorators & Context Managers (`decorators.py`)**: Fonksiyon davranışı yönetimi ve bağlam yöneticileri.
-5. **OOP Design Patterns (`oop.py`)**: Yazılım tasarım kalıpları (Singleton, Factory, State, Strategy, Observer, vb.).
-6. **Typing & Async (`typing_utils.py`, `async_utils.py`)**: Tip güvenliği, protokoller ve asenkron işlem yöneticileri.
+## 🛠️ Çalıştırma
 
-## 🛠️ Kurulum ve Çalıştırma
-
-Projeyi yerel ortamınızda çalıştırmak için **uv** paket yöneticisini kullanabilirsiniz:
-
+Testleri çalıştırmak için:
 ```bash
-# Bağımlılıkları yükleyin
-uv sync
-
-# Testleri çalıştırın
 uv run pytest
