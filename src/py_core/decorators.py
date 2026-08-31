@@ -1,5 +1,7 @@
 import time
 import functools
+import os
+import sys
 from contextlib import contextmanager
 from typing import Any, Callable, Type, Tuple
 
@@ -64,3 +66,64 @@ class TimerContext:
 def timer_context():
     """Kod bloğunun süresini ölçen context manager."""
     return TimerContext()
+
+def rate_limit(min_interval: float) -> Callable:
+    """Fonksiyonun minimum çağrı aralığını sınırlar (rate limiting)."""
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        last_called = 0.0
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            nonlocal last_called
+            now = time.perf_counter()
+            if now - last_called < min_interval:
+                raise RuntimeError("Rate limit aşıldı!")
+            last_called = now
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+def singleton(cls: Type[Any]) -> Callable[..., Any]:
+    """Bir sınıfın yalnızca tek bir örneğinin (instance) oluşturulmasını sağlar."""
+    instances = {}
+    @functools.wraps(cls)
+    def wrapper(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return wrapper
+
+def log_execution(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Fonksiyon çağrılarını argümanları ve sonuçlarıyla birlikte loglar."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Çalıştırılıyor: {func.__name__} | args: {args}, kwargs: {kwargs}")
+        result = func(*args, **kwargs)
+        print(f"Tamamlandı: {func.__name__} | sonuç: {result}")
+        return result
+    return wrapper
+
+@contextmanager
+def temp_env(**kwargs: str):
+    """Geçici ortam değişkenleri tanımlar, blok bitince eski haline getirir."""
+    old_values = {}
+    for key, value in kwargs.items():
+        old_values[key] = os.environ.get(key)
+        os.environ[key] = value
+    try:
+        yield
+    finally:
+        for key, value in old_values.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+
+@contextmanager
+def redirect_stdout(new_target):
+    """Standart çıktıyı (stdout) geçici olarak başka bir akışa yönlendirir."""
+    old_target = sys.stdout
+    sys.stdout = new_target
+    try:
+        yield new_target
+    finally:
+        sys.stdout = old_target
