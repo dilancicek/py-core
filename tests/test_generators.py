@@ -5,6 +5,11 @@ from py_core.generators import (
     unique_everseen,
     sliding_window,
     flatten_generator,
+    windowed,
+    drop_while_value,
+    take_until,
+    peekable,
+    pairwise,
 )
 
 def test_chunk_generator():
@@ -42,3 +47,29 @@ def test_flatten_generator():
     assert list(flatten_generator(nested)) == [1, 2, 3, 4, 5]
     assert list(flatten_generator([])) == []
     assert list(flatten_generator([ [1], [], [2, 3] ])) == [1, 2, 3]
+
+def test_windowed():
+    data = [1, 2, 3, 4, 5, 6]
+    assert list(windowed(data, 3, step=2)) == [[1, 2, 3], [3, 4, 5]]
+
+def test_drop_while_value():
+    data = [1, 2, 3, 4, 1, 2]
+    assert list(drop_while_value(lambda x: x < 3, data)) == [3, 4, 1, 2]
+
+def test_take_until():
+    data = [1, 2, 3, 4, 5, 1]
+    assert list(take_until(lambda x: x > 3, data)) == [1, 2, 3]
+
+def test_peekable():
+    it = peekable([1, 2, 3])
+    assert it.peek() == 1
+    assert next(it) == 1
+    assert it.peek() == 2
+    assert next(it) == 2
+    assert next(it) == 3
+
+def test_pairwise():
+    data = [1, 2, 3, 4]
+    assert list(pairwise(data)) == [(1, 2), (2, 3), (3, 4)]
+    assert list(pairwise([1])) == []
+    assert list(pairwise([])) == []

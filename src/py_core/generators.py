@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Any, Iterable, Iterator, List, Union
+from typing import Any, Iterable, Iterator, List, Union, Callable
 
 def chunk_generator(iterable: Iterable[Any], size: int) -> Iterator[List[Any]]:
     """Bir iterable'ı tüketmeden, belirtilen boyutta küçük parçalar halinde (lazy) üretir."""
@@ -60,3 +60,70 @@ def flatten_generator(iterable_of_iterables: Iterable[Iterable[Any]]) -> Iterato
         for item in sublist:
             yield item
 
+def windowed(iterable: Iterable[Any], size: int, step: int = 1) -> Iterator[List[Any]]:
+    """Belirtilen boyut ve adım aralığıyla (step) lazy pencereler üretir."""
+    if size <= 0 or step <= 0:
+        return
+    
+    items = list(iterable)
+    for i in range(0, len(items) - size + 1, step):
+        yield items[i : i + size]
+
+def drop_while_value(predicate: Callable[[Any], bool], iterable: Iterable[Any]) -> Iterator[Any]:
+    """Koşul doğru olduğu sürece elemanları atlar, ilk yanlış koşuldan itibaren üretir."""
+    iterator = iter(iterable)
+    dropping = True
+    for item in iterator:
+        if dropping:
+            if not predicate(item):
+                dropping = False
+                yield item
+        else:
+            yield item
+
+def take_until(predicate: Callable[[Any], bool], iterable: Iterable[Any]) -> Iterator[Any]:
+    """Koşul sağlanana kadar elemanları üretir, koşul sağlandığında durur."""
+    for item in iterable:
+        if predicate(item):
+            break
+        yield item
+
+class peekable:
+    """Bir iteratöre tüketmeden sıradaki elemana bakma (peek) özelliği kazandırır."""
+    def __init__(self, iterable: Iterable[Any]):
+        self._iterator = iter(iterable)
+        self._has_peeked = False
+        self._peeked_value = None
+
+    def __iter__(self) -> Iterator[Any]:
+        return self
+
+    def __next__(self) -> Any:
+        if self._has_peeked:
+            self._has_peeked = False
+            val = self._peeked_value
+            self._peeked_value = None
+            return val
+        return next(self._iterator)
+
+    def peek(self, default: Any = None) -> Any:
+        """İteratörü ilerletmeden sıradaki elemanı döndürür."""
+        if not self._has_peeked:
+            try:
+                self._peeked_value = next(self._iterator)
+                self._has_peeked = True
+            except StopIteration:
+                return default
+        return self._peeked_value
+
+def pairwise(iterable: Iterable[Any]) -> Iterator[tuple]:
+    """Bir akıştaki ardışık elemanları ikili demetler (tuple) halinde üretir."""
+    iterator = iter(iterable)
+    try:
+        prev = next(iterator)
+    except StopIteration:
+        return
+
+    for item in iterator:
+        yield (prev, item)
+        prev = item
