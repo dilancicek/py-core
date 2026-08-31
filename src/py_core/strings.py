@@ -23,3 +23,24 @@ def to_snake_case(text: str) -> str:
     """Metni snake_case (alt_tireli) formata dönüştürür."""
     # split() fazladan boşlukları temizler, join() ve lower() ile birleştiririz.
     return "_".join(text.split()).lower()
+
+def count_words(text: str) -> int:
+    """Metindeki kelime sayısını döndürür."""
+    return len(text.split())
+
+def is_anagram(word1: str, word2: str) -> bool:
+    """İki kelimenin anagram (aynı harflerden oluşma) olup olmadığını kontrol eder."""
+    return sorted(word1.replace(" ", "").lower()) == sorted(word2.replace(" ", "").lower())
+
+def longest_word(text: str) -> str:
+    """Metindeki en uzun kelimeyi bulur."""
+    words = text.split()
+    return max(words, key=len) if words else ""
+
+def count_char(text: str, char: str) -> int:
+    """Metin içinde belirli bir karakterin (büyük/küçük harf duyarsız) kaç kez geçtiğini bulur."""
+    return text.lower().count(char.lower())
+
+def truncate(text: str, max_length: int) -> str:
+    """Metni belirtilen uzunlukta keser ve sonuna '...' ekler."""
+    return text[:max_length] + "..." if len(text) > max_length else text
