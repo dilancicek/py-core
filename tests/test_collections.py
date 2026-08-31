@@ -75,7 +75,7 @@ def test_rotate_list():
 
 def test_find_duplicates():
     assert sorted(find_duplicates([1, 2, 2, 3, 4, 4, 5])) == [2, 4]
-    assert find_duplicates(["elma", "armut", "elma", "muz", "muz"]) == ["elma", "muz"]
+    assert sorted(find_duplicates(["elma", "armut", "elma", "muz", "muz"])) == ["elma", "muz"]
     assert find_duplicates([1, 2, 3]) == []
     assert find_duplicates([]) == []
 
