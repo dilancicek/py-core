@@ -1,7 +1,7 @@
 [project]
 name = "py-core"
 version = "0.1.0"
-description = "Add your description here"
+description = "Python core utilities and tools"
 readme = "README.md"
 authors = [
     { name = "Dilan Çiçek", email = "dilancicek335@gmail.com" }
@@ -25,3 +25,11 @@ dev = [
     "pytest-cov>=7.1.0",
     "ruff>=0.16.5",
 ]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true

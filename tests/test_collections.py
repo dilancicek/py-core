@@ -1,20 +1,21 @@
 from py_core.collections import (
+    calculate_average,
+    chunk_list,
+    count_frequencies,
+    difference,
+    find_duplicates,
+    find_max,
+    find_min,
+    flatten_dictionary,
+    flatten_list,
     get_evens,
     get_unique_elements,
-    find_max,
-    flatten_list,
-    find_min,
-    calculate_average,
-    count_frequencies,
-    chunk_list,
-    merge_dicts,
-    rotate_list,
-    find_duplicates,
-    flatten_dictionary,
     group_by,
     intersection,
-    difference,
+    merge_dicts,
+    rotate_list,
 )
+
 
 def test_get_evens():
     assert get_evens([1, 2, 3, 4, 5, 6]) == [2, 4, 6]

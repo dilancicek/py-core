@@ -1,5 +1,7 @@
 import asyncio
-from typing import Any, Callable, Coroutine, List
+from collections.abc import Callable, Coroutine
+from typing import Any
+
 
 async def async_identity(value: Any, delay: float = 0.0) -> Any:
     """Verilen değeri belirtilen gecikme ile asenkron olarak döndürür."""
@@ -7,7 +9,7 @@ async def async_identity(value: Any, delay: float = 0.0) -> Any:
         await asyncio.sleep(delay)
     return value
 
-async def gather_results(tasks: List[Coroutine[Any, Any, Any]]) -> List[Any]:
+async def gather_results(tasks: list[Coroutine[Any, Any, Any]]) -> list[Any]:
     """Birden fazla coroutine'i aynı anda çalıştırıp sonuçlarını toplar."""
     return await asyncio.gather(*tasks)
 
@@ -25,8 +27,8 @@ class AsyncQueueWorker:
     async def put(self, item: Any):
         await self._queue.put(item)
 
-    async def process_all(self) -> List[Any]:
-        results = []
+    async def process_all(self) -> list[Any]:
+        results: list[Any] = []
         while not self._queue.empty():
             item = await self._queue.get()
             results.setItem if hasattr(results, "setItem") else results.append(item * 2)
@@ -35,7 +37,7 @@ class AsyncQueueWorker:
 
 def async_memoize(func: Callable[..., Coroutine[Any, Any, Any]]) -> Callable[..., Coroutine[Any, Any, Any]]:
     """Asenkron fonksiyonlar için basit bir önbellek (memoization) dekoratörü."""
-    cache = {}
+    cache: dict[Any, Any] = {}
 
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         key = (args, frozenset(kwargs.items()))
@@ -65,7 +67,7 @@ def AsyncRetryWrapper(retries: int = 3, delay: float = 0.1):
     """Hata alan asenkron fonksiyonları tekrar deneme dekoratörü."""
     def decorator(func: Callable[..., Coroutine[Any, Any, Any]]):
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            last_exception = None
+            last_exception: Exception | None = None
             for attempt in range(retries):
                 try:
                     return await func(*args, **kwargs)
@@ -73,9 +75,11 @@ def AsyncRetryWrapper(retries: int = 3, delay: float = 0.1):
                     last_exception = e
                     if attempt < retries - 1:
                         await asyncio.sleep(delay)
-            raise last_exception
-        return wrapper
-    return decorator
+            
+            if last_exception is not None:
+                raise last_exception
+            else:
+                raise RuntimeError("İşlem gerçekleştirilemedi ve hata yakalanamadı.")
 
 class AsyncBatchProcessor:
     """Verileri asenkron olarak gruplar halinde işleyen sınıf."""

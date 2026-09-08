@@ -1,23 +1,24 @@
 import pytest
+
 from py_core.oop import (
-    SingletonMeta,
-    Observable,
-    BaseModel,
-    Registry,
-    Immutable,
-    Builder,
-    Factory,
-    StateContext,
-    ConcreteStateA,
-    ConcreteStateB,
-    CommandManager,
-    Proxy,
-    StrategyContext,
     Adapter,
-    CustomCollection,
-    CompositeNode,
+    BaseModel,
     BaseTemplate,
+    Builder,
+    CommandManager,
+    CompositeNode,
+    ConcreteStateA,
+    CustomCollection,
+    Factory,
+    Immutable,
+    Observable,
+    Proxy,
+    Registry,
+    SingletonMeta,
+    StateContext,
+    StrategyContext,
 )
+
 
 def test_singleton_meta():
     class DBConnection(metaclass=SingletonMeta):

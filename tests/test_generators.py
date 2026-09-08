@@ -1,16 +1,18 @@
 import itertools
+
 from py_core.generators import (
     chunk_generator,
-    running_average,
-    unique_everseen,
-    sliding_window,
-    flatten_generator,
-    windowed,
     drop_while_value,
-    take_until,
-    peekable,
+    flatten_generator,
     pairwise,
+    peekable,
+    running_average,
+    sliding_window,
+    take_until,
+    unique_everseen,
+    windowed,
 )
+
 
 def test_chunk_generator():
     data = [1, 2, 3, 4, 5, 6, 7]

@@ -1,22 +1,24 @@
+
 import pytest
-from typing import Dict, List, Any
+
 from py_core.typing_utils import (
-    is_of_type,
     JSON,
-    Predicate,
-    safe_cast,
+    CallableRegistry,
     HasName,
-    maybe,
+    ImmutableList,
+    Predicate,
     Result,
     TypeValidator,
-    ImmutableList,
-    CallableRegistry,
+    is_of_type,
+    maybe,
+    safe_cast,
 )
+
 
 def test_is_of_type():
     assert is_of_type(5, int) is True
     assert is_of_type("hello", int) is False
-    assert is_of_type([1, 2, 3], List[int]) is True
+    assert is_of_type([1, 2, 3], list[int]) is True
 
 def test_json_alias():
     data: JSON = {"key": [1, 2, {"nested": "val"}]}
@@ -59,14 +61,12 @@ def test_type_validator():
     assert validator.validate({"name": "Ali", "age": 25}) is True
     
     # Yanlış tip verileri
-    import pytest
     with pytest.raises(TypeError):
         validator.validate({"name": "Ali", "age": "yirmi beş"})
 
 def test_immutable_list():
     lst = ImmutableList([1, 2, 3])
     assert lst[0] == 1
-    import pytest
     with pytest.raises(TypeError):
         lst.append(4)  # Değiştirilemez olmalı
 

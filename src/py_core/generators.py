@@ -1,7 +1,9 @@
 from collections import deque
-from typing import Any, Iterable, Iterator, List, Union, Callable
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any
 
-def chunk_generator(iterable: Iterable[Any], size: int) -> Iterator[List[Any]]:
+
+def chunk_generator(iterable: Iterable[Any], size: int) -> Iterator[list[Any]]:
     """Bir iterable'ı tüketmeden, belirtilen boyutta küçük parçalar halinde (lazy) üretir."""
     if size <= 0:
         raise ValueError("Chunk boyutu 0'dan büyük olmalıdır.")
@@ -15,7 +17,7 @@ def chunk_generator(iterable: Iterable[Any], size: int) -> Iterator[List[Any]]:
     if chunk:
         yield chunk
 
-def running_average(iterable: Iterable[Union[int, float]]) -> Iterator[float]:
+def running_average(iterable: Iterable[int | float]) -> Iterator[float]:
     """Bir sayı akışının kümülatif ortalamasını her adımda lazy olarak hesaplar ve üretir."""
     total = 0.0
     count = 0
@@ -32,13 +34,13 @@ def unique_everseen(iterable: Iterable[Any]) -> Iterator[Any]:
             seen.add(item)
             yield item
 
-def sliding_window(iterable: Iterable[Any], size: int) -> Iterator[List[Any]]:
+def sliding_window(iterable: Iterable[Any], size: int) -> Iterator[list[Any]]:
     """Belirtilen boyutta kayan bir pencere (sliding window) oluşturarak lazy üretir."""
     if size <= 0:
         return
     
     iterator = iter(iterable)
-    window = deque(maxlen=size)
+    window: deque[Any] = deque(maxlen=size)
     
     # İlk pencereyi doldur
     for _ in range(size):
@@ -60,7 +62,7 @@ def flatten_generator(iterable_of_iterables: Iterable[Iterable[Any]]) -> Iterato
         for item in sublist:
             yield item
 
-def windowed(iterable: Iterable[Any], size: int, step: int = 1) -> Iterator[List[Any]]:
+def windowed(iterable: Iterable[Any], size: int, step: int = 1) -> Iterator[list[Any]]:
     """Belirtilen boyut ve adım aralığıyla (step) lazy pencereler üretir."""
     if size <= 0 or step <= 0:
         return

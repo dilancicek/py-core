@@ -1,11 +1,13 @@
-import time
 import functools
 import os
 import sys
+import time
+from collections.abc import Callable
 from contextlib import contextmanager
-from typing import Any, Callable, Type, Tuple
+from typing import Any
 
-def time_it(func: Callable[..., Any]) -> Callable[..., Tuple[Any, float]]:
+
+def time_it(func: Callable[..., Any]) -> Callable[..., tuple[Any, float]]:
     """Fonksiyonun çalışma süresini ölçer ve (sonuç, süre) ikilisi döndürür."""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -20,7 +22,7 @@ def retry(retries: int = 3, delay: float = 1.0) -> Callable:
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            last_exception = None
+            last_exception: Exception | None = None
             for attempt in range(retries):
                 try:
                     return func(*args, **kwargs)
@@ -28,7 +30,11 @@ def retry(retries: int = 3, delay: float = 1.0) -> Callable:
                     last_exception = e
                     if attempt < retries - 1:
                         time.sleep(delay)
-            raise last_exception
+            
+            if last_exception is not None:
+                raise last_exception
+            else:
+                raise RuntimeError("İşlem gerçekleştirilemedi ve hata yakalanamadı.")
         return wrapper
     return decorator
 
@@ -44,7 +50,7 @@ def memoize(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 @contextmanager
-def suppress_exception(*exceptions: Type[Exception]):
+def suppress_exception(*exceptions: type[Exception]):
     """Belirtilen exception'ları güvenli bir şekilde bastırır."""
     try:
         yield
@@ -82,7 +88,7 @@ def rate_limit(min_interval: float) -> Callable:
         return wrapper
     return decorator
 
-def singleton(cls: Type[Any]) -> Callable[..., Any]:
+def singleton(cls: type[Any]) -> Callable[..., Any]:
     """Bir sınıfın yalnızca tek bir örneğinin (instance) oluşturulmasını sağlar."""
     instances = {}
     @functools.wraps(cls)
@@ -105,18 +111,18 @@ def log_execution(func: Callable[..., Any]) -> Callable[..., Any]:
 @contextmanager
 def temp_env(**kwargs: str):
     """Geçici ortam değişkenleri tanımlar, blok bitince eski haline getirir."""
-    old_values = {}
+    old_values: dict[str, str | None] = {}
     for key, value in kwargs.items():
         old_values[key] = os.environ.get(key)
         os.environ[key] = value
     try:
         yield
     finally:
-        for key, value in old_values.items():
-            if value is None:
+        for key, old_val in old_values.items():
+            if old_val is None:
                 os.environ.pop(key, None)
             else:
-                os.environ[key] = value
+                os.environ[key] = old_val
 
 @contextmanager
 def redirect_stdout(new_target):

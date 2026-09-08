@@ -1,11 +1,7 @@
-from typing import Any, Callable, Type, TypeVar, Union, Protocol, runtime_checkable
-from typing_extensions import TypeAlias
+from collections.abc import Callable
+from typing import Any, Protocol, TypeAlias, TypeVar, runtime_checkable
 
-JSON: TypeAlias = Union[
-    str, int, float, bool, None, 
-    list["JSON"], 
-    dict[str, "JSON"]
-]
+JSON: TypeAlias = str | int | float | bool | None | list["JSON"] | dict[str, "JSON"]
 
 T = TypeVar("T")
 Predicate: TypeAlias = Callable[[T], bool]
@@ -15,7 +11,7 @@ class HasName(Protocol):
     name: str
 
 py_core_typing = Any
-def is_of_type(value: Any, expected_type: Type[Any]) -> bool:
+def is_of_type(value: Any, expected_type: type[Any]) -> bool:
     """Verilen değerin belirtilen tip ile uyumlu olup olmadığını kontrol eder."""
     origin = getattr(expected_type, "__origin__", None)
     
@@ -35,15 +31,14 @@ def is_of_type(value: Any, expected_type: Type[Any]) -> bool:
     except TypeError:
         return True
 
-T_co = TypeVar("T_co")
-def safe_cast(value: Any, target_type: Type[T_co], default: Any = None) -> Any:
+def safe_cast(value: Any, target_type: Callable[[Any], T], default: Any = None) -> Any:
     """Değeri güvenli bir şekilde hedeflenen tipe dönüştürür, hata durumunda default döner."""
     try:
         return target_type(value)
     except (ValueError, TypeError):
         return default
 
-def maybe(value: Any, cast_type: Type[T], default: T) -> T:
+def maybe(value: Any, cast_type: Callable[[Any], T], default: T) -> T:
     """Değer None veya geçersizse default döner, aksi halde cast eder."""
     if value is None:
         return default
@@ -83,7 +78,7 @@ class Result:
 
 class TypeValidator:
     """Verilen bir sözlükteki verilerin tiplerini şemaya göre doğrulayan sınıf."""
-    def __init__(self, schema: dict[str, Type[Any]]):
+    def __init__(self, schema: dict[str, type[Any]]):
         self._schema = schema
 
     def validate(self, data: dict[str, Any]) -> bool:
@@ -126,3 +121,11 @@ class CallableRegistry:
         if name not in self._registry:
             raise KeyError(f"'{name}' kayıt defterinde bulunamadı.")
         return self._registry[name]
+
+def ensure_list(value: T | list[T]) -> list[T]:
+    """Değer bir liste değilse, onu içeren tek elemanlı bir liste döner."""
+    return value if isinstance(value, list) else [value]
+
+def get_first(items: list[T], default: T | None = None) -> T | None:
+    """Listenin ilk elemanını döndürür, liste boşsa default döner."""
+    return items[0] if items else default

@@ -1,7 +1,16 @@
 from py_core.strings import (
-    count_vowels, is_palindrome, reverse_words, remove_vowels, to_snake_case,
-    count_words, is_anagram, longest_word, count_char, truncate
+    count_char,
+    count_vowels,
+    count_words,
+    is_anagram,
+    is_palindrome,
+    longest_word,
+    remove_vowels,
+    reverse_words,
+    to_snake_case,
+    truncate,
 )
+
 
 def test_count_vowels():
     assert count_vowels("Merhaba") == 3

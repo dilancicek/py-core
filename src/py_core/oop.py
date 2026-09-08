@@ -1,8 +1,10 @@
-from typing import Any, Callable, Dict, Type
+from collections.abc import Callable
+from typing import Any
+
 
 class SingletonMeta(type):
     """Metaclass tabanlı Singleton tasarım kalıbı."""
-    _instances: Dict[Type[Any], Any] = {}
+    _instances: dict[type[Any], Any] = {}
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -37,7 +39,7 @@ class BaseModel:
 class Registry:
     """Sınıf ve fonksiyonları merkezi olarak kaydeden kayıt defteri."""
     def __init__(self):
-        self._items: Dict[str, Any] = {}
+        self._items: dict[str, Any] = {}
 
     def register(self, name: str) -> Callable[[Any], Any]:
         def decorator(cls_or_func: Any) -> Any:
@@ -70,7 +72,7 @@ class Builder:
 class Factory:
     """Koşullara veya anahtarlara göre nesne üreten fabrika sınıfı."""
     def __init__(self):
-        self._creators: Dict[str, Callable[[], Any]] = {}
+        self._creators: dict[str, Callable[[], Any]] = {}
 
     def register(self, key: str, creator: Callable[[], Any]) -> None:
         self._creators[key] = creator
@@ -160,7 +162,7 @@ class CompositeNode:
     """Ağaç yapısındaki parça-bütün ilişkilerini yöneten Composite sınıfı."""
     def __init__(self, name: str):
         self.name = name
-        self._children = []
+        self._children: list[Any] = []
 
     def add(self, node: 'CompositeNode'):
         self._children.append(node)
