@@ -68,7 +68,7 @@ def test_rate_limit():
 
     assert fast_call() == "ok"
     # Çok hızlı ikinci çağrıda exception fırlatmalı
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         fast_call()
 
 def test_singleton():

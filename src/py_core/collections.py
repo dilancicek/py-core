@@ -98,9 +98,9 @@ def group_by(items: list[Any], key_func: Callable[[Any], Any]) -> dict[Any, list
 def intersection(list1: list[Any], list2: list[Any]) -> list[Any]:
     """İki listenin kesişim kümesini (ortak elemanlarını) döndürür."""
     set2 = set(list2)
-    return list(set(item for item in list1 if item in set2))
+    return list({item for item in list1 if item in set2})
 
 def difference(list1: list[Any], list2: list[Any]) -> list[Any]:
     """Birinci listede olup ikinci listede olmayan elemanları döndürür."""
     set2 = set(list2)
-    return list(set(item for item in list1 if item not in set2))
+    return list({item for item in list1 if item not in set2})

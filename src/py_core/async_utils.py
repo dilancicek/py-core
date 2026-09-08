@@ -71,7 +71,7 @@ def AsyncRetryWrapper(retries: int = 3, delay: float = 0.1):
             for attempt in range(retries):
                 try:
                     return await func(*args, **kwargs)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     last_exception = e
                     if attempt < retries - 1:
                         await asyncio.sleep(delay)

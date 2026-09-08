@@ -4,7 +4,7 @@ from typing import Any
 
 class SingletonMeta(type):
     """Metaclass tabanlı Singleton tasarım kalıbı."""
-    _instances: dict[type[Any], Any] = {}
+    _instances: dict[type[Any], Any] = {}   # noqa: RUF012
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:

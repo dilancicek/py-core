@@ -23,7 +23,7 @@ def running_average(iterable: Iterable[int | float]) -> Iterator[float]:
     count = 0
     for item in iterable:
         total += item
-        count += 1
+        count += 1  # noqa: SIM113
         yield total / count
 
 def unique_everseen(iterable: Iterable[Any]) -> Iterator[Any]:
@@ -59,8 +59,7 @@ def sliding_window(iterable: Iterable[Any], size: int) -> Iterator[list[Any]]:
 def flatten_generator(iterable_of_iterables: Iterable[Iterable[Any]]) -> Iterator[Any]:
     """İç içe geçmiş iterable yapılarını tek seviyede lazy olarak düzleştirir."""
     for sublist in iterable_of_iterables:
-        for item in sublist:
-            yield item
+        yield from sublist
 
 def windowed(iterable: Iterable[Any], size: int, step: int = 1) -> Iterator[list[Any]]:
     """Belirtilen boyut ve adım aralığıyla (step) lazy pencereler üretir."""

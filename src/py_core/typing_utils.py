@@ -1,10 +1,10 @@
 from collections.abc import Callable
-from typing import Any, Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import Any, Protocol, TypeVar, runtime_checkable
 
-JSON: TypeAlias = str | int | float | bool | None | list["JSON"] | dict[str, "JSON"]
+type JSON = str | int | float | bool | None | list["JSON"] | dict[str, "JSON"]
 
 T = TypeVar("T")
-Predicate: TypeAlias = Callable[[T], bool]
+type Predicate[T] = Callable[[T], bool]
 
 @runtime_checkable
 class HasName(Protocol):
@@ -24,21 +24,21 @@ def is_of_type(value: Any, expected_type: type[Any]) -> bool:
     if origin is dict:
         if not isinstance(value, dict):
             return False
-        return all(isinstance(k, str) for k in value.keys())
+        return all(isinstance(k, str) for k in value)
 
     try:
         return isinstance(value, expected_type)
     except TypeError:
         return True
 
-def safe_cast(value: Any, target_type: Callable[[Any], T], default: Any = None) -> Any:
+def safe_cast[T](value: Any, target_type: Callable[[Any], T], default: Any = None) -> Any:
     """Değeri güvenli bir şekilde hedeflenen tipe dönüştürür, hata durumunda default döner."""
     try:
         return target_type(value)
     except (ValueError, TypeError):
         return default
 
-def maybe(value: Any, cast_type: Callable[[Any], T], default: T) -> T:
+def maybe[T](value: Any, cast_type: Callable[[Any], T], default: T) -> T:
     """Değer None veya geçersizse default döner, aksi halde cast eder."""
     if value is None:
         return default
@@ -122,10 +122,10 @@ class CallableRegistry:
             raise KeyError(f"'{name}' kayıt defterinde bulunamadı.")
         return self._registry[name]
 
-def ensure_list(value: T | list[T]) -> list[T]:
+def ensure_list[T](value: T | list[T]) -> list[T]:
     """Değer bir liste değilse, onu içeren tek elemanlı bir liste döner."""
     return value if isinstance(value, list) else [value]
 
-def get_first(items: list[T], default: T | None = None) -> T | None:
+def get_first[T](items: list[T], default: T | None = None) -> T | None:
     """Listenin ilk elemanını döndürür, liste boşsa default döner."""
     return items[0] if items else default

@@ -26,7 +26,7 @@ def retry(retries: int = 3, delay: float = 1.0) -> Callable:
             for attempt in range(retries):
                 try:
                     return func(*args, **kwargs)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     last_exception = e
                     if attempt < retries - 1:
                         time.sleep(delay)
