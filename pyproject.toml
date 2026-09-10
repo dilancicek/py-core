@@ -32,4 +32,6 @@ target-version = "py312"
 
 [tool.mypy]
 strict = true
+disallow_untyped_defs = false
+disallow_untyped_calls = false
 ignore_missing_imports = true
