@@ -47,19 +47,19 @@ def maybe[T](value: Any, cast_type: Callable[[Any], T], default: T) -> T:
     except (ValueError, TypeError):
         return default
 
-class Result:
+class Result[T, E]:
     """Başarı veya hata durumunu tip güvenli yöneten Result sınıfı."""
-    def __init__(self, value: Any = None, error: Any = None, success: bool = True):
+    def __init__(self, value: T | None = None, error: E | None = None, success: bool = True):
         self._value = value
         self._error = error
         self._success = success
 
     @classmethod
-    def Ok(cls, value: Any) -> "Result":
+    def Ok(cls, value: T) -> "Result[T, Any]":
         return cls(value=value, success=True)
 
     @classmethod
-    def Err(cls, error: Any) -> "Result":
+    def Err(cls, error: E) -> "Result[Any, E]":
         return cls(error=error, success=False)
 
     def is_ok(self) -> bool:

@@ -67,6 +67,10 @@ def AsyncRetryWrapper(retries: int = 3, delay: float = 0.1):
     """Hata alan asenkron fonksiyonları tekrar deneme dekoratörü."""
     def decorator(func: Callable[..., Coroutine[Any, Any, Any]]):
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            # 1. GUARD CLAUSE: Mantıksız girişleri en başta engelle
+            if retries < 1:
+                raise ValueError("Deneme sayısı (retries) en az 1 olmalıdır.")
+
             last_exception: Exception | None = None
             for attempt in range(retries):
                 try:
@@ -75,11 +79,11 @@ def AsyncRetryWrapper(retries: int = 3, delay: float = 0.1):
                     last_exception = e
                     if attempt < retries - 1:
                         await asyncio.sleep(delay)
-            
-            if last_exception is not None:
-                raise last_exception
-            else:
-                raise RuntimeError("İşlem gerçekleştirilemedi ve hata yakalanamadı.")
+
+            # 2. TİP GARANTİSİ: Guard clause sayesinde döngünün en az 1 kez çalıştığından
+            # ve last_exception'ın kesinlikle Exception dolu olduğundan eminiz.
+            assert last_exception is not None
+            raise last_exception
 
 class AsyncBatchProcessor:
     """Verileri asenkron olarak gruplar halinde işleyen sınıf."""
