@@ -17,3 +17,4 @@ Proje kapsamında geliştirilen modüller ve test edilen yapılar:
 Testleri çalıştırmak için:
 ```bash
 uv run pytest
+```
